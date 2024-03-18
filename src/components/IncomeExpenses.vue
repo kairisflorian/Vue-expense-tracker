@@ -2,11 +2,24 @@
     <div class="inc-exp-container">
         <div>
             <h4>Revenu</h4>
-            <p class="money plus" id="money-plus">+$0.00</p>
+            <p class="money plus" id="money-plus">+${{ income }}</p>
         </div>
         <div>
             <h4>Dépense</h4>
-            <p class="money minus" id="money-minus">-$0.00</p>
+            <p class="money minus" id="money-minus">-${{ expenses }}</p>
         </div>
     </div>
 </template>
+
+<script setup>
+const props = defineProps({
+    income: {
+        type: Number,
+        required: true,
+    },
+    expenses: {
+        type: Number,
+        required: true,
+    },
+});
+</script>
