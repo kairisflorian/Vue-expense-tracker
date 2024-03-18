@@ -33,6 +33,8 @@ import { useToast } from "vue-toastification";
 const text = ref("");
 const amount = ref("");
 
+const emits = defineEmits(["transactionSubmitted"]);
+
 const toast = useToast();
 
 const onSubmit = () => {
@@ -40,7 +42,11 @@ const onSubmit = () => {
         toast.error("Les deux champs doivent être remplis.");
         return;
     }
-    console.log(text.value, amount.value);
+    const transactionData = {
+        text: text.value,
+        amount: parseFloat(amount.value),
+    };
+    emits("transactionSubmitted", transactionData);
     text.value = "";
     amount.value = "";
 };
