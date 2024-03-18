@@ -10,7 +10,12 @@
             <span>
                 {{ transaction.amount }}
             </span>
-            <button class="delete-btn">x</button>
+            <button
+                class="delete-btn"
+                @click="deleteTransaction(transaction.id)"
+            >
+                x
+            </button>
         </li>
     </ul>
 </template>
@@ -22,4 +27,10 @@ const props = defineProps({
         required: true,
     },
 });
+
+const emits = defineEmits(["transactionDeleted"]);
+
+const deleteTransaction = (id) => {
+    emits("transactionDeleted", id);
+};
 </script>

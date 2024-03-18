@@ -3,7 +3,10 @@
     <div class="container">
         <Balance :total="+total" />
         <IncomeExpenses :income="+income" :expenses="+expenses" />
-        <TransactionList :transactions="transactions" />
+        <TransactionList
+            :transactions="transactions"
+            @transactionDeleted="handleTransactionDeleted"
+        />
         <AddTransaction @transactionSubmitted="handleTransactionSubmitted" />
     </div>
 </template>
@@ -15,17 +18,20 @@ import IncomeExpenses from "./components/IncomeExpenses.vue";
 import TransactionList from "./components/TransactionList.vue";
 import AddTransaction from "./components/AddTransaction.vue";
 
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useToast } from "vue-toastification";
 
-const transactions = ref([
-    { id: 1, text: "Fleurs", amount: -19.99 },
-    { id: 2, text: "Salaire", amount: 299.99 },
-    { id: 3, text: "Livre", amount: -10 },
-    { id: 4, text: "Caméra", amount: 150 },
-]);
+const transactions = ref([]);
 
 const toast = useToast();
+
+onMounted(() => {
+    const savedTransactions = JSON.parse(localStorage.getItem("transactions"));
+
+    if (savedTransactions) {
+        transactions.value = savedTransactions;
+    }
+});
 
 // Récupérer le total
 const total = computed(() => {
@@ -61,11 +67,26 @@ const handleTransactionSubmitted = (transactionData) => {
         text: transactionData.text,
         amount: transactionData.amount,
     });
+    saveTransactionsToLocalStorage();
     toast.success("Transaction ajoutée !");
 };
 
 // Générateur d'ID unique
 const generateUniqueId = () => {
     return Math.floor(Math.random() * 1000000);
+};
+
+// Supprimer une transaction
+const handleTransactionDeleted = (id) => {
+    transactions.value = transactions.value.filter((transaction) => {
+        transaction.id !== id;
+    });
+    saveTransactionsToLocalStorage();
+    toast.success("La transaction a été supprimée !");
+};
+
+// Sauvegarder dans le localstorage
+const saveTransactionsToLocalStorage = () => {
+    localStorage.setItem("transactions", JSON.stringify(transactions.value));
 };
 </script>
